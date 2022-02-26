@@ -1,22 +1,38 @@
 import React, {useEffect} from 'react';
-import {Box} from 'native-base';
+import {Box, Center, VStack, ScrollView, Spinner} from 'native-base';
 import {getPosts} from '../Serivice/HttpService';
 import PostCard from '../components/PostCard';
+import {NewsCard} from '../components/NewsCard';
+import {LoadingSpinner} from '../components/LoadingSpinner';
 
 const Home = () => {
   const [posts, setPosts] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
   useEffect(() => {
-    getPosts(1).then(data => {
-      console.log(data);
-      setPosts(data);
-    });
+    getPosts(1)
+      .then(data => {
+        console.log(data);
+        setPosts(data);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   return (
-    <Box px={2}>
-      {posts.length > 0 &&
-        posts.map((post, index) => <PostCard post={post} key={index} />)}
-    </Box>
+    <>
+      {loading && <LoadingSpinner />}
+      <ScrollView marginTop={5}>
+        <VStack space={3}>
+          {posts.map((post: any) => (
+            <NewsCard key={post.id} post={post} />
+          ))}
+        </VStack>
+      </ScrollView>
+    </>
   );
 };
 
