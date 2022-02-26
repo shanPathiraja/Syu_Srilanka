@@ -9,6 +9,7 @@ import {
   Text,
   HStack,
   VStack,
+  Spinner,
 } from 'native-base';
 import {getMedia} from '../Serivice/HttpService';
 import {formatDateLong, stripHtmlTags} from '../utils/TextUtils';
@@ -22,7 +23,7 @@ export const NewsCard = (props: {post: any}) => {
         setImage(res);
       })
       .catch(err => {
-        console.log(err);
+        console.error(err);
       });
   }, [props.post]);
 
@@ -39,33 +40,28 @@ export const NewsCard = (props: {post: any}) => {
         <HStack space={5}>
           <VStack w="25%" space={2}>
             <Box>
-              <AspectRatio w="100%" ratio={2/3}>
-                {image && (
+              <AspectRatio w="100%" ratio={2 / 3}>
+                {image ? (
                   <Image
                     source={{
                       uri: image,
                     }}
                     alt="image"
                   />
+                ) : (
+                  <Spinner color="blue.500" />
                 )}
               </AspectRatio>
             </Box>
           </VStack>
-          <VStack w="75%" space={0} marginTop={3} >
-            <Heading size="sm" w='100%'>
+          <VStack w="75%" space={0} marginTop={3}>
+            <Heading size="sm" w="100%">
               {stripHtmlTags(props.post.title.rendered)}
             </Heading>
-            <Text
-              fontSize="xs"
-              color="pink.600"
-              fontWeight="500">
+            <Text fontSize="xs" color="pink.600" fontWeight="500">
               {formatDateLong(props.post.date)}
             </Text>
-            <Text
-              isTruncated
-              fontSize="sm"
-              numberOfLines={3}
-              fontWeight="400">
+            <Text isTruncated fontSize="sm" numberOfLines={3} fontWeight="400">
               {stripHtmlTags(props.post.excerpt.rendered)}
             </Text>
           </VStack>
