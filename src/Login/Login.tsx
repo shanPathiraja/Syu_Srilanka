@@ -12,18 +12,39 @@ import {
   Heading,
   AspectRatio,
   Image,
-  Select,
 } from 'native-base';
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 
 const Login = (props: {navigation: PropsWithChildren<any>}) => {
+  const [phone, setPhone] = React.useState('');
+  const [confirm, setConfirm] =
+    React.useState<null | FirebaseAuthTypes.ConfirmationResult>(null);
+  const [code, setCode] = React.useState('');
+  const login = () => {
+    if (!confirm) {
+      auth()
+        .signInWithPhoneNumber('+94 ' + phone)
+        .then(r => setConfirm(r))
+        .catch(e => {
+          console.log(e);
+          return null;
+        });
+      return;
+    }
+    confirm
+      .confirm(code)
+      .then(r => {
+        console.log(r);
+        props.navigation.navigate('Home');
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
 
-  const login=()=> {
-    props.navigation.navigate('Home');
-  }
-
-  const register=()=> {
+  const register = () => {
     props.navigation.navigate('Register');
-  }
+  };
   return (
     <Center w="100%" height="100%">
       <Box safeArea p="2" py="8" w="90%" maxW="290">
@@ -47,24 +68,40 @@ const Login = (props: {navigation: PropsWithChildren<any>}) => {
         <VStack space={3} mt="20">
           <FormControl>
             <FormControl.Label>Phone Number</FormControl.Label>
-            <Input InputLeftElement={<Text marginLeft={2}>+94</Text>} />
-          </FormControl>
-          <FormControl>
-            <FormControl.Label>Password</FormControl.Label>
-            <Input type="password" />
-            <Link
-              _text={{
-                fontSize: 'xs',
-                fontWeight: '500',
-                color: 'indigo.500',
+            <Input
+              isDisabled={!!confirm}
+              onChange={e => {
+                setPhone(e.nativeEvent.text);
               }}
-              alignSelf="flex-end"
-              mt="1">
-              Forget Password?
-            </Link>
+              InputLeftElement={<Text marginLeft={2}>+94</Text>}
+            />
           </FormControl>
+          {confirm && (
+            <FormControl>
+              <FormControl.Label>Verification Code</FormControl.Label>
+              <Input
+                onChange={e => {
+                  setCode(e.nativeEvent.text);
+                }}
+              />
+            </FormControl>
+          )}
+          {/*<FormControl>*/}
+          {/*  <FormControl.Label>Password</FormControl.Label>*/}
+          {/*  <Input type="password" />*/}
+          {/*  <Link*/}
+          {/*    _text={{*/}
+          {/*      fontSize: 'xs',*/}
+          {/*      fontWeight: '500',*/}
+          {/*      color: 'indigo.500',*/}
+          {/*    }}*/}
+          {/*    alignSelf="flex-end"*/}
+          {/*    mt="1">*/}
+          {/*    Forget Password?*/}
+          {/*  </Link>*/}
+          {/*</FormControl>*/}
           <Button mt="2" colorScheme="indigo" onPress={login}>
-            Sign in
+            {confirm ? 'Verify' : 'Login'}
           </Button>
           <HStack mt="6" justifyContent="center">
             <Text fontSize="sm" color="coolGray.600">
@@ -83,49 +120,6 @@ const Login = (props: {navigation: PropsWithChildren<any>}) => {
         </VStack>
       </Box>
     </Center>
-  );
-
-  return (
-    <Box safeArea p={'2'}>
-      <VStack space={3} mt="5">
-        <FormControl>
-          <FormControl.Label>Phone Number</FormControl.Label>
-          <Input />
-        </FormControl>
-        <FormControl>
-          <FormControl.Label>Password</FormControl.Label>
-          <Input type="password" />
-        </FormControl>
-        <Button
-          mt="2"
-          colorScheme="indigo"
-          onPress={() => {
-            props.navigation.navigate('Home');
-          }}>
-          LogIn
-        </Button>
-        <HStack mt="6" justifyContent="center">
-          <Text
-            fontSize="sm"
-            color="coolGray.600"
-            _dark={{
-              color: 'warmGray.200',
-            }}>
-            I'm a new user.{' '}
-          </Text>
-          <Link
-            _text={{
-              color: 'indigo.500',
-              fontWeight: 'medium',
-              fontSize: 'sm',
-            }}
-            onPress={() => props.navigation.navigate('Register')}
-            href="#">
-            Sign Up
-          </Link>
-        </HStack>
-      </VStack>
-    </Box>
   );
 };
 export default Login;

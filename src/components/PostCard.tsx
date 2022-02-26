@@ -1,8 +1,7 @@
 import React, {useEffect} from 'react';
 import {Box, VStack, Divider, HStack, Image, Text} from 'native-base';
 import {getMedia} from '../Serivice/HttpService';
-import {decode} from 'html-entities';
-import {stripHtmlTags} from "../utils/TextUtils";
+import {stripHtmlTags} from '../utils/TextUtils';
 
 const PostCard = (props: {post: any}) => {
   const [image, setImage] = React.useState<string | null>(null);
@@ -28,7 +27,9 @@ const PostCard = (props: {post: any}) => {
             </Text>
           </Box>
           <Box px="4">
-            <Text numberOfLines={2}>{stripHtmlTags(props.post.excerpt.rendered)}</Text>
+            <Text numberOfLines={2}>
+              {stripHtmlTags(props.post.excerpt.rendered)}
+            </Text>
           </Box>
           <Box px="4" pb="4">
             GeekyAnts

@@ -31,6 +31,16 @@ import RootNavigater from './src/Navigater/RootNavigater';
 //   );
 // }
 const App = () => {
+  // const app = initializeApp(firebaseConfig);
+  //
+  // const res = auth()
+  //   .signInWithPhoneNumber('+94 716017460')
+  //   .then(r => r)
+  //   .catch(e => {
+  //     console.log(e);
+  //     return null;
+  //   });
+
   return (
     <NavigationContainer>
       <NativeBaseProvider>
